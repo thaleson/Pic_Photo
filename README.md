@@ -24,9 +24,7 @@ Aqui estão os passos para configurar o ambiente de desenvolvimento:
 2. Instale as dependências usando pip: `pip install -r requirements.txt`
 3. Execute o servidor: `flask run`
 
-## ⚙️ Executando os testes
 
-Explique como executar os testes automatizados para este sistema.
 
 ## 🛠️ Construído com
 
@@ -39,7 +37,7 @@ Nós usamos SemVer para controle de versão. Para as versões disponíveis, veja
 
 ## ✒️ Autores
 
-* **Thaleson Silva** - *Desenvolvedor Full Stack e Cientista de Dados* - ThalesonSilva
+* **Thaleson Silva** - *Desenvolvedor Full Stack e data science* - ThalesonSilva
 
 Veja também a lista de contribuidores que participaram deste projeto.
 
@@ -55,4 +53,4 @@ Este projeto está sob a licença (sua licença) - veja o arquivo LICENSE.md par
 * etc.
 
 ---
-⌨️ com ❤️ por Thaleson Silva 😊
+⌨️  por Thaleson Silva 😊
