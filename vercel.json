@@ -1,16 +1,16 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "main.py",
-        "use": "@vercel/python"
-        }
-      ],
-      "routes":[
-      {
-        "src":"/(.*)", 
-        "dest":"/index.html"
-      }
+  "builds": [
+    {
+      "src": "path/to/your/entrypoint.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "build": {
+    "env": {
+      "PIP_NO_BINARY": "psycopg2"
+    },
+    "commands": [
+      "apt-get update && apt-get install -y postgresql-client"
     ]
   }
-  
+}
