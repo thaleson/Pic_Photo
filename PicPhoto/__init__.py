@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 
 # Certifique-se de que a variável de ambiente DATA_BASEURL está definida
-DATABASE_URL = os.getenv("DATA_BASEURL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=DATABASE_URL)
 if not DATABASE_URL:
     raise ValueError("A variável de ambiente DATA_BASEURL não está definida")
