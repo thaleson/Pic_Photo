@@ -2,12 +2,15 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
+from sqlalchemy.orm import sessionmaker
+
 import os
 
 app = Flask(__name__)
 
 # Certifique-se de que a variável de ambiente DATA_BASEURL está definida
 DATABASE_URL = os.getenv("DATA_BASEURL")
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=DATABASE_URL)
 if not DATABASE_URL:
     raise ValueError("A variável de ambiente DATA_BASEURL não está definida")
 
