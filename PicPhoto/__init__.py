@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 
 # Certifique-se de que a variável de ambiente DATA_BASEURL está definida
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = "postgresql://awgfhxoc:MjjqSBT4N3C5E-fRS2eWplN3kenEzaFS@kesavan.db.elephantsql.com/awgfhxoc"
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=DATABASE_URL)
 if not DATABASE_URL:
     raise ValueError("A variável de ambiente DATA_BASEURL não está definida")

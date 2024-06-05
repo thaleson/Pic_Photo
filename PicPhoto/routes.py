@@ -1,11 +1,10 @@
-from flask import redirect, render_template, url_for, request, flash, make_response, send_file
+from flask import redirect, render_template, url_for, request, flash, make_response
 from PicPhoto import app, database, bcrypt
 from flask_login import login_required, logout_user, login_user, current_user
 from PicPhoto.forms import FormLogin, FormRegister, FormPhoto
 from PicPhoto.models import User, Photo
 import os
 from werkzeug.utils import secure_filename
-import io
 
 @app.after_request
 def add_permissions_policy_header(response):
@@ -22,6 +21,7 @@ def homepage():
             login_user(user, remember=True)
             return redirect(url_for("perfil", id_user=user.id))
     return render_template("homepage.html", form=formlogin)
+
 
 @app.route("/criar-conta", methods=["GET", "POST"])
 def createacount(): 
@@ -40,6 +40,7 @@ def createacount():
 
     return render_template("criar-conta.html", form=formregister)
 
+
 @app.route("/perfil/<int:id_user>", methods=["GET", "POST"])
 @login_required
 def perfil(id_user):
@@ -49,9 +50,15 @@ def perfil(id_user):
         if form_photos.validate_on_submit():
             file = form_photos.foto.data
             safe_name = secure_filename(file.filename)
-            file_data = file.read()
+            path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                app.config["UPLOAD_FOLDER"])
+            if not os.path.exists(path):
+                os.makedirs(path)  # Create the directory if it doesn't exist
 
-            photo = Photo(image_data=file_data, image_name=safe_name, id_user=current_user.id)
+            file_path = os.path.join(path, safe_name)
+            file.save(file_path)
+
+            photo = Photo(image=safe_name, id_user=current_user.id)
             database.session.add(photo)
             database.session.commit()
 
@@ -65,19 +72,16 @@ def perfil(id_user):
             return redirect(url_for("homepage"))  # Redirect if user not found
     return render_template("perfil.html", usuario=usuario, form=None)
 
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("homepage"))
 
+
 @app.route("/feed")
 @login_required
 def feed():
     photos = Photo.query.order_by(Photo.creation_date).all()
-    return render_template("feed.html", photos=photos)
-
-@app.route("/photo/<int:photo_id>")
-def serve_photo(photo_id):
-    photo = Photo.query.get_or_404(photo_id)
-    return send_file(io.BytesIO(photo.image_data), mimetype='image/jpeg', attachment_filename=photo.image_name)
+    return render_template("feed.html",photos=photos)
