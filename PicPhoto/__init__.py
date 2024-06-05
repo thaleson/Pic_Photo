@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 # Certifique-se de que a variável de ambiente DATA_BASEURL está definida
-DATABASE_URL = "postgresql://database_url_h0r0_user:kgfYYZBU3ELi8BaZWkcNmQqdV5wjfkWI@dpg-cpg4k30l5elc738n8js0-a/database_url_h0r0"
+DATABASE_URL = os.getenv("DATA_BASEURL")
 if not DATABASE_URL:
     raise ValueError("A variável de ambiente DATA_BASEURL não está definida")
 
