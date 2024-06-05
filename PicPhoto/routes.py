@@ -3,9 +3,18 @@ from PicPhoto import app, database, bcrypt
 from flask_login import login_required, logout_user, login_user, current_user
 from PicPhoto.forms import FormLogin, FormRegister, FormPhoto
 from PicPhoto.models import User, Photo
-import os
 from werkzeug.utils import secure_filename
+import boto3
+import os
 
+# Configuração do S3
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+    region_name=os.environ.get('AWS_REGION')
+)
+S3_BUCKET = os.environ.get('S3_BUCKET_NAME')
 
 @app.route("/", methods=["GET", "POST"])
 def homepage():
@@ -46,19 +55,23 @@ def perfil(id_user):
         if form_photos.validate_on_submit():
             file = form_photos.foto.data
             safe_name = secure_filename(file.filename)
-            path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                app.config["UPLOAD_FOLDER"])
-            if not os.path.exists(path):
-                os.makedirs(path)  # Create the directory if it doesn't exist
+            # Substitua o armazenamento local por upload para S3
+            try:
+                s3.upload_fileobj(
+                    file,
+                    S3_BUCKET,
+                    safe_name,
+                    ExtraArgs={"ACL": "public-read"}
+                )
+                file_url = f"https://{S3_BUCKET}.s3.amazonaws.com/{safe_name}"
+                
+                photo = Photo(image=file_url, id_user=current_user.id)
+                database.session.add(photo)
+                database.session.commit()
 
-            file_path = os.path.join(path, safe_name)
-            file.save(file_path)
-
-            photo = Photo(image=safe_name, id_user=current_user.id)
-            database.session.add(photo)
-            database.session.commit()
-
-            flash("Photo uploaded successfully!", "success")
+                flash("Photo uploaded successfully!", "success")
+            except Exception as e:
+                flash(f"An error occurred: {str(e)}", "danger")
             return redirect(url_for("perfil", id_user=current_user.id))
 
         return render_template("perfil.html", usuario=current_user, form=form_photos)
@@ -77,8 +90,7 @@ def logout():
 
 
 @app.route("/feed")
-
 @login_required
 def feed():
     photos = Photo.query.order_by(Photo.creation_date).all()
-    return render_template("feed.html",photos=photos)
+    return render_template("feed.html", photos=photos)
