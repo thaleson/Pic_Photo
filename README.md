@@ -2,7 +2,7 @@
 
 Bem-vindo ao repositório do PicPhoto! Este projeto é uma plataforma de compartilhamento de fotos inspirada no Pinterest e é construído com Flask. 🌐🖼️🐍
 
-Você pode visitar o site em : https://pic-photo-effl.onrender.com
+Você pode visitar o site em : https://pic-photo-effl.onrender.com/
 
 ## 🚀 Começando
 
